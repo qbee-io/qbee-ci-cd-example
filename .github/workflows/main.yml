@@ -29,5 +29,5 @@ jobs:
       - name: Package
         uses: bpicode/github-action-fpm@master
         with:
-      #    fpm_args: './build'
-          fpm_opts: "-s dir -t deb -n qbee-ci-cd-example --version ${GITHUB_REF##*/} -d python3-flask -d python3-yaml -C ./files/package etc usr"
+      #    fpm_args: "--version ${GITHUB_REF##*/}"
+          fpm_opts: "-s dir -t deb -n qbee-ci-cd-example -d python3-flask -d python3-yaml -C ./files/package etc usr"
