@@ -17,4 +17,4 @@ app = Flask(__name__)
 def hello_world():
   return "<p>{}</p>".format(config["title"])
 
-app.run()
+app.run(host="0.0.0.0")
