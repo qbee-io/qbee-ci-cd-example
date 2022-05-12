@@ -1,0 +1,10 @@
+[Unit]
+Description=qbee-ci-cd-example
+After=network.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/qbee-ci-cd-example.py
+
+[Install]
+WantedBy=multi-user.target

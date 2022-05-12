@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+PROG_NAME=$(basename $(git rev-parse --show-toplevel))
+PROG_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || true)
+
+if [[ -z $AGENT_VERSION ]]; then
+  PROG_VERSION="0.0.0~$(git rev-parse --short HEAD)"
+fi
+
+PKG_BUILD_DIR=build
+
+mkdir -p build
+
+fpm -s dir -t deb -n $PROG_NAME --version "$PROG_VERSION" \
+  -d python3-flask \
+  -d python3-yaml \
+  -p "$PKG_BUILD_DIR" -C ./files/package etc usr
