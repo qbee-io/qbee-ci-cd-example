@@ -3,7 +3,7 @@
 PROG_NAME=$(basename $(git rev-parse --show-toplevel))
 PROG_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || true)
 
-if [[ -z $AGENT_VERSION ]]; then
+if [[ -z $PROG_VERSION ]]; then
   PROG_VERSION="0.0.0~$(git rev-parse --short HEAD)"
 fi
 
