@@ -24,15 +24,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Mandatory to use the extract version from tag action
       
-      - name: Extract version from tag
-        uses: damienaicheh/extract-version-from-tag-action@v1.0.0
-
       # Runs a single command using the runners shell
       - name: Package
         uses: bpicode/github-action-fpm@master
         with:
-          fpm_args: "--version $MAJOR.$MINOR.$PATCH"
+          fpm_args: "--version ${{ env.GITHUB_REF_NAME }}"
           fpm_opts: "-s dir -t deb -n qbee-ci-cd-example -d python3-flask -d python3-yaml -C ./files/package etc usr"
