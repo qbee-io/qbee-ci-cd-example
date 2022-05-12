@@ -32,5 +32,5 @@ jobs:
       - name: Package
         uses: bpicode/github-action-fpm@master
         with:
-      #    fpm_args: "--version $MAJOR.$MINOR.$PATCH"
+          fpm_args: "--version $MAJOR.$MINOR.$PATCH"
           fpm_opts: "-s dir -t deb -n qbee-ci-cd-example -d python3-flask -d python3-yaml -C ./files/package etc usr"
