@@ -27,4 +27,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: tag number
-        run : echo ${{ github.event.release.tag_name }}
+        run : |
+          echo "hello"
+          echo ${{ github.event.release.tag_name }}
