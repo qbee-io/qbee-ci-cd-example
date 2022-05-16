@@ -69,7 +69,7 @@ jobs:
           local_directory: '/'
 
       - name: qbee.io software management
-        uses: qbee-io/software-management-action@v0.2
+        uses: qbee-io/software-management-action@v0.3
         with:
           token: ${{ steps.qbee-auth.outputs.token }}
           config_file: 'qbee/software_management.json'
