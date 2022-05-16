@@ -7,6 +7,8 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [ main ]
 
@@ -24,13 +26,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
 
       - name: git command test
         run: |
           echo ${{ github.ref_name }}
           echo ${{ github.ref }}
-          echo ${{ github.repository }}
+          basename ${{ github.repository }}
           echo ${{ github.sha }} | cut -c -6
+          git describe --tags --abbrev=0
 # git describe --tags --abbrev=0 2>/dev/null
 # git rev-parse --show-toplevel
 # git rev-parse --short HEAD
