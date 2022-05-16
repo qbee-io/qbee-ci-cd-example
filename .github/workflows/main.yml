@@ -24,14 +24,44 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
+      - name: git command test
+        run: |
+          git describe --tags --abbrev=0 2>/dev/null
+          git rev-parse --show-toplevel
+          git rev-parse --short HEAD
+
       - name: Test
         run: |
           env
-      
+
       # Runs a single command using the runners shell
       - name: Package
-        uses: bpicode/github-action-fpm@master
+        uses: bpicode/github-action-fpm@v0.9.2
         with:
           fpm_args: "--version $GITHUB_REF_NAME"
           fpm_opts: "-s dir -t deb -n qbee-ci-cd-example -d python3-flask -d python3-yaml -C ./files/package etc usr"
+
+      # - name: qbee.io authentication
+      #   id: qbee-auth
+      #   uses: qbee-io/authenticate-action@v1
+      #   with:
+      #     login: ${{ secrets.QBEE_USER }}
+      #     password: ${{ secrets.QBEE_PW }}
+
+      # - name: qbee.io file upload deb package
+      #   uses: qbee-io/file-upload-action@v1.2
+      #   with:
+      #     token: ${{ steps.qbee-auth.outputs.token }}
+      #     filename: 'package.name'
+      #     qbee_directory: '/folder/in/qbee'
+      #     local_directory: '/github/path/to/package'
+
+      # - name: qbee.io software management
+      #   uses: qbee-io/software-management-action@v0.2
+      #   with:
+      #     token: ${{ steps.qbee-auth.outputs.token }}
+      #     config_file: 'qbee/software_management.json'
+      #     mode: 'replace'
+      #     device_or_group_id: ${{ secrets.QBEE_DEVICE_ID }}
+      #     commit_message: 'uploading content from GitHub'

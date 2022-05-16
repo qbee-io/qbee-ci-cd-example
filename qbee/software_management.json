@@ -1,0 +1,21 @@
+{
+    "enabled": true,
+    "items": [
+        {
+            "package": "/test/qbee-ci-cd-example_0.0.1_amd64.deb",
+            "config_files": [
+                {
+                    "config_template": "/test/qbee-ci-cd-config.yml.template",
+                    "config_location": "/etc/qbee-ci-cd-example/qbee-ci-cd-config.yml"
+                }
+            ],
+            "parameters": [
+                {
+                    "key": "title",
+                    "value": "Welcome to qbee-ci-cd-example"
+                }
+            ]
+        }
+    ],
+    "version": "v1"
+}
