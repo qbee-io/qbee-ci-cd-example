@@ -65,19 +65,19 @@ jobs:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
 
-      # - name: qbee.io file upload deb package
-      #   uses: qbee-io/file-upload-action@v1.2
-      #   with:
-      #     token: ${{ steps.qbee-auth.outputs.token }}
-      #     filename: 'qbee-ci-cd-example_0.0.123_amd64.deb'
-      #     qbee_directory: '/github-upload/'
-      #     local_directory: '/'
+      - name: qbee.io file upload deb package
+        uses: qbee-io/file-upload-action@v1.2
+        with:
+          token: ${{ steps.qbee-auth.outputs.token }}
+          filename: 'qbee-ci-cd-example_0.0.123_amd64.deb'
+          qbee_directory: '/github-upload/'
+          local_directory: '.'
 
       - name: qbee.io software management
         uses: qbee-io/software-management-action@v0.3
         with:
           token: ${{ steps.qbee-auth.outputs.token }}
           config_file: 'qbee/software_management.json'
-          mode: 'replace'
+          mode: 'if_not_present'
           device_or_group_id: ${{ secrets.QBEE_DEVICE_ID }}
           commit_message: 'uploading content from GitHub'
