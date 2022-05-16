@@ -27,16 +27,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref }}
-          token: ${{ github.token }}
+          fetch-depth: 0
 
       - name: git command test
         run: |
           echo ${{ github.ref_name }}
           echo ${{ github.ref }}
           basename ${{ github.repository }}
-          echo ${{ github.sha }} | cut -c -6
+          echo ${{ github.sha }} | cut -c -7
           git describe --tags --abbrev=0
+          git rev-parse --short HEAD
 # git describe --tags --abbrev=0 2>/dev/null
 # git rev-parse --show-toplevel
 # git rev-parse --short HEAD
