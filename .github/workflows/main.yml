@@ -53,6 +53,11 @@ jobs:
           fpm_args: "--version 0.0.123"
           fpm_opts: "-s dir -t deb -n qbee-ci-cd-example -d python3-flask -d python3-yaml -C ./files/package etc usr"
 
+      - name: find package
+        run: |
+          ls -l
+          find . -iname "*.deb"
+
       - name: qbee.io authentication
         id: qbee-auth
         uses: qbee-io/authenticate-action@v1
@@ -60,13 +65,13 @@ jobs:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
 
-      - name: qbee.io file upload deb package
-        uses: qbee-io/file-upload-action@v1.2
-        with:
-          token: ${{ steps.qbee-auth.outputs.token }}
-          filename: 'qbee-ci-cd-example_0.0.123_amd64.deb'
-          qbee_directory: '/github-upload/'
-          local_directory: '/'
+      # - name: qbee.io file upload deb package
+      #   uses: qbee-io/file-upload-action@v1.2
+      #   with:
+      #     token: ${{ steps.qbee-auth.outputs.token }}
+      #     filename: 'qbee-ci-cd-example_0.0.123_amd64.deb'
+      #     qbee_directory: '/github-upload/'
+      #     local_directory: '/'
 
       - name: qbee.io software management
         uses: qbee-io/software-management-action@v0.3
