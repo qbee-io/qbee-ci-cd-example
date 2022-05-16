@@ -70,7 +70,7 @@ jobs:
         with:
           token: ${{ steps.qbee-auth.outputs.token }}
           filename: 'qbee-ci-cd-example_0.0.123_amd64.deb'
-          qbee_directory: '/github-upload/'
+          qbee_directory: '/'
           local_directory: '.'
 
       - name: qbee.io software management
