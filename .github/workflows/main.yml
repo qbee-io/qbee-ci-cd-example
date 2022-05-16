@@ -27,9 +27,13 @@ jobs:
 
       - name: git command test
         run: |
-          git describe --tags --abbrev=0 2>/dev/null
-          git rev-parse --show-toplevel
-          git rev-parse --short HEAD
+          echo ${{ github.ref_name }}
+          echo ${{ github.ref }}
+          echo ${{ github.repository }}
+          echo ${{ github.sha }} | cut -c -6
+# git describe --tags --abbrev=0 2>/dev/null
+# git rev-parse --show-toplevel
+# git rev-parse --short HEAD
 
       - name: Test
         run: |
