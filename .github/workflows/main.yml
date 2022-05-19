@@ -47,47 +47,12 @@ jobs:
           echo "::set-output name=PKG_ARCH::$PKG_ARCH"
           echo "::set-output name=PKG_FILENAME::${PKG_NAME}_${PKG_VERSION}_${PKG_ARCH}.deb"
           
-#      - name: git command test
-#        id: github-env-setup
-#        run: |
-#          echo ${{ github.ref_name }}
-#          echo ${{ github.ref }}
-#          echo "::set-output name=PROG_NAME::$(basename ${{ github.repository }})"
-#          PROG_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || true)
-#          if [[ -z $PROG_VERSION ]]; then
-#            PROG_VERSION="0.0.0~$(git rev-parse --short HEAD)"
-#          fi
-#          echo "::set-output name=PROG_VERSION::$PROG_VERSION"
-#          PKG_BUILD_DIR=build
-#          mkdir -p $PKG_BUILD_DIR
-#          echo "::set-output name=PKG_BUILD_DIR::$PKG_BUILD_DIR"
-#          echo ${{ github.sha }} | cut -c -7
-
-# git describe --tags --abbrev=0 2>/dev/null
-# git rev-parse --show-toplevel
-# git rev-parse --short HEAD
-
-#      - name: get env setup
-#        run: |
-#          echo "prog name is: ${{ steps.github-env-setup.outputs.PROG_NAME }}"
-#          echo "prog version is: ${{ steps.github-env-setup.outputs.PROG_VERSION }}"
-#          echo "build dir is: ${{ steps.github-env-setup.outputs.PKG_BUILD_DIR }}"
-
-      - name: Test
-        run: |
-          echo ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
-
       # Runs a single command using the runners shell
       - name: Package
         uses: bpicode/github-action-fpm@v0.9.2
         with:
           fpm_args: "--version ${{ steps.resolve-package-details.outputs.PKG_VERSION }} --architecture ${{ steps.resolve-package-details.outputs.PKG_ARCH }}"
           fpm_opts: "-s dir -t deb -n ${{ steps.resolve-package-details.outputs.PKG_NAME }} -d python3-flask -d python3-yaml -C ./files/package etc usr"
-
-      - name: find package
-        run: |
-          ls -l
-          find . -iname "*.deb"
 
       # - name: qbee.io authentication
       #   id: qbee-auth
@@ -100,7 +65,7 @@ jobs:
       #   uses: qbee-io/file-upload-action@v1.2
       #   with:
       #     token: ${{ steps.qbee-auth.outputs.token }}
-      #     filename: ${{ ${{ steps.resolve-package-details.outputs.PKG_VERSION }} --architecture ${{ steps.resolve-package-details.outputs.PKG_ARCH }}
+      #     filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
       #     qbee_directory: '/'
       #     local_directory: '.'
 
