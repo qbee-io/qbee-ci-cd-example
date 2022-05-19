@@ -36,7 +36,7 @@ jobs:
         run: |
           echo ${{ github.ref_type }}
           # Version for non-tag pushes
-          PROG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0~git%cd.%h)
+          PROG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             PROG_VERSION=$(git describe --abbrev=0 --tags)
           fi
