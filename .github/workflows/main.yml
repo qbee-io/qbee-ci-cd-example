@@ -33,7 +33,7 @@ jobs:
       - name: Resolve package details
         id: resolve-package-details
         run: |
-          # Version for non-tag pushes
+          
           PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             PKG_VERSION=$(git describe --abbrev=0 --tags)
