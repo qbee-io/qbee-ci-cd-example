@@ -76,7 +76,7 @@ jobs:
       - name: Package
         uses: bpicode/github-action-fpm@v0.9.2
         with:
-          fpm_args: "--version {{ steps.resolve-package-version.outputs.PROG_VERSION }}"
+          fpm_args: "--version ${{ steps.resolve-package-version.outputs.PROG_VERSION }}"
           fpm_opts: "-s dir -t deb -n ${{ steps.github-env-setup.outputs.PROG_NAME }} -d python3-flask -d python3-yaml -C ./files/package etc usr"
 
       - name: find package
