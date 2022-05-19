@@ -38,13 +38,14 @@ jobs:
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             PKG_VERSION=$(git describe --abbrev=0 --tags)
           fi
+          
           PKG_NAME=$(basename ${{ github.repository }})
           PKG_ARCH=$(dpkg --print-architecture)
           
           echo "::set-output name=PKG_VERSION::$PKG_VERSION"
           echo "::set-output name=PKG_NAME::$PKG_NAME"
           echo "::set-output name=PKG_ARCH::$PKG_ARCH"
-          echo "::set-output name=PKG_FILENAME::$PKG_NAME_$PKG_VERSION_$PKG_ARCH.deb"
+          echo "::set-output name=PKG_FILENAME::${PKG_NAME}_${PKG_VERSION}_${PKG_ARCH}.deb"
           
 #      - name: git command test
 #        id: github-env-setup
