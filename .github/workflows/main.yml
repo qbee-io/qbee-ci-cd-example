@@ -32,15 +32,16 @@ jobs:
       
       # Attempt at resolving package version
       - name: Resolve package version
-        id: qbee-package-version
+        id: resolve-package-version
         run: |
           echo ${{ github.ref_type }}
+          # Version for non-tag pushes
+          PROG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0~git%cd.%h)
           if [[ ${{ github.ref_type }} == "tag" ]]; then
-            echo $(git describe --abbrev=0 --tags)
-          else
-            echo $(git log --date=format:%Y%m%d --pretty=0.0~git%cd.%h)
+            PROG_VERSION=$(git describe --abbrev=0 --tags)
           fi
-
+          echo "::set-output name=PROG_VERSION::$PROG_VERSION"
+          
       - name: git command test
         id: github-env-setup
         run: |
@@ -75,7 +76,7 @@ jobs:
       - name: Package
         uses: bpicode/github-action-fpm@v0.9.2
         with:
-          fpm_args: "--version 0.0.123"
+          fpm_args: "--version {{ steps.resolve-package-version.outputs.PROG_VERSION }}"
           fpm_opts: "-s dir -t deb -n ${{ steps.github-env-setup.outputs.PROG_NAME }} -d python3-flask -d python3-yaml -C ./files/package etc usr"
 
       - name: find package
