@@ -71,7 +71,7 @@ jobs:
 
       - name: show json
         run: |
-          cat tst.json
+          cat qbee/software_management.json
 
       - name: qbee.io authentication
         id: qbee-auth
