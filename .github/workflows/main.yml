@@ -36,7 +36,8 @@ jobs:
         id: resolve-package-details
         run: |
 
-          PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
+          #PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
+          PKG_VERSION="0.0.$(date +%s)"
           if [[ ${{ github.ref_type }} == "tag" ]]; then
            PKG_VERSION=$(git describe --abbrev=0 --tags)
           fi
@@ -58,7 +59,8 @@ jobs:
 
       - name: Update package name in qbee config json
         run: |
-          jq '.items[0].package="${{ env.qbee_upload_folder }}/${{ steps.resolve-package-details.outputs.PKG_FILENAME }}"' qbee/software_management.json > tst.json
+          jq '.items[0].package="${{ env.qbee_upload_folder }}/${{ steps.resolve-package-details.outputs.PKG_FILENAME }}"' qbee/software_management.json > qbee/software_management.json.tmp
+          mv qbee/software_management.json.tmp qbee/software_management.json
 
       # - name: Update package name in qbee config json
       #   uses: jossef/action-set-json-field@v1
@@ -71,26 +73,34 @@ jobs:
         run: |
           cat tst.json
 
-      # - name: qbee.io authentication
-      #   id: qbee-auth
-      #   uses: qbee-io/authenticate-action@v1
-      #   with:
-      #     login: ${{ secrets.QBEE_USER }}
-      #     password: ${{ secrets.QBEE_PW }}
+      - name: qbee.io authentication
+        id: qbee-auth
+        uses: qbee-io/authenticate-action@v1
+        with:
+          login: ${{ secrets.QBEE_USER }}
+          password: ${{ secrets.QBEE_PW }}
 
-      # - name: qbee.io file upload deb package
-      #   uses: qbee-io/file-upload-action@v1.2
-      #   with:
-      #     token: ${{ steps.qbee-auth.outputs.token }}
-      #     filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
-      #     qbee_directory: '/'
-      #     local_directory: '.'
+      - name: qbee.io file upload deb package
+        uses: qbee-io/file-upload-action@v1.2
+        with:
+          token: ${{ steps.qbee-auth.outputs.token }}
+          filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
+          qbee_directory: '/test'
+          local_directory: '.'
 
-      # - name: qbee.io software management
-      #   uses: qbee-io/software-management-action@v0.3
-      #   with:
-      #     token: ${{ steps.qbee-auth.outputs.token }}
-      #     config_file: 'qbee/software_management.json'
-      #     mode: 'if_not_present'
-      #     device_or_group_id: ${{ secrets.QBEE_DEVICE_ID }}
-      #     commit_message: 'uploading content from GitHub'
+      - name: qbee.io file upload deb package
+        uses: qbee-io/file-upload-action@v1.2
+        with:
+          token: ${{ steps.qbee-auth.outputs.token }}
+          filename: qbee-ci-cd-config.yml.template
+          qbee_directory: '/test'
+          local_directory: 'files/config'
+
+      - name: qbee.io software management
+        uses: qbee-io/software-management-action@v0.3
+        with:
+         token: ${{ steps.qbee-auth.outputs.token }}
+         config_file: 'qbee/software_management.json'
+         mode: 'replace'
+         device_or_group_id: ${{ secrets.QBEE_DEVICE_ID }}
+         commit_message: 'uploading content from GitHub'
