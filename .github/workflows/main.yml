@@ -38,8 +38,11 @@ jobs:
 
           #PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
           PKG_VERSION="0.0.$(date +%s)"
+          DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_DEV }}"
           if [[ ${{ github.ref_type }} == "tag" ]]; then
-           PKG_VERSION=$(git describe --abbrev=0 --tags)
+            PKG_VERSION=$(git describe --abbrev=0 --tags)
+            # Deploy to prod on tag
+            DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_PROD }}"
           fi
 
           PKG_NAME=$(basename ${{ github.repository }})
@@ -49,6 +52,7 @@ jobs:
           echo "::set-output name=PKG_NAME::$PKG_NAME"
           echo "::set-output name=PKG_ARCH::$PKG_ARCH"
           echo "::set-output name=PKG_FILENAME::${PKG_NAME}_${PKG_VERSION}_${PKG_ARCH}.deb"
+          echo "::set-output name=DEPLOYMENT_GROUP::$DEPLOYMENT_GROUP"
 
       # Runs a single command using the runners shell
       - name: Package
@@ -102,5 +106,5 @@ jobs:
          token: ${{ steps.qbee-auth.outputs.token }}
          config_file: 'qbee/software_management.json'
          mode: 'replace'
-         device_or_group_id: ${{ secrets.QBEE_DEVICE_ID }}
+         device_or_group_id: ${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}
          commit_message: 'uploading content from GitHub'
