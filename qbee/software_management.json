@@ -12,7 +12,7 @@
             "parameters": [
                 {
                     "key": "title",
-                    "value": "Welcome to qbee-ci-cd-example. I'm a little teapot, and I'm okay..."
+                    "value": "Welcome to qbee-ci-cd-example."
                 }
             ]
         }
