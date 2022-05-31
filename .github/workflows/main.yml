@@ -61,10 +61,10 @@ jobs:
           fpm_args: "--version ${{ steps.resolve-package-details.outputs.PKG_VERSION }} --architecture ${{ steps.resolve-package-details.outputs.PKG_ARCH }}"
           fpm_opts: "-s dir -t deb -n ${{ steps.resolve-package-details.outputs.PKG_NAME }} -d python3-flask -d python3-yaml -C ./files/package etc usr"
 
-      - name: Update package name in qbee config json
-        run: |
-          jq '.items[0].package="${{ env.qbee_upload_folder }}/${{ steps.resolve-package-details.outputs.PKG_FILENAME }}"' qbee/software_management.json > qbee/software_management.json.tmp
-          mv qbee/software_management.json.tmp qbee/software_management.json
+      # - name: Update package name in qbee config json
+      #   run: |
+      #     jq '.items[0].package="${{ env.qbee_upload_folder }}/${{ steps.resolve-package-details.outputs.PKG_FILENAME }}"' qbee/software_management.json > qbee/software_management.json.tmp
+      #     mv qbee/software_management.json.tmp qbee/software_management.json
 
       # - name: Update package name in qbee config json
       #   uses: jossef/action-set-json-field@v1
@@ -73,9 +73,9 @@ jobs:
       #     field: items.package
       #     value: ${{ steps.resolve-package-details.outputs.PKG_NAME }}
 
-      - name: show json
-        run: |
-          cat qbee/software_management.json
+      # - name: show json
+      #   run: |
+      #     cat qbee/software_management.json
 
       - name: qbee.io authentication
         id: qbee-auth
@@ -101,10 +101,11 @@ jobs:
           local_directory: 'files/config'
 
       - name: qbee.io software management
-        uses: qbee-io/software-management-action@v0.3
+        uses: qbee-io/software-management-action@v0.4
         with:
          token: ${{ steps.qbee-auth.outputs.token }}
          config_file: 'qbee/software_management.json'
+         package_name: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
          mode: 'replace'
          device_or_group_id: ${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}
          commit_message: 'uploading content from GitHub'
