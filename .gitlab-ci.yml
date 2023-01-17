@@ -1,0 +1,52 @@
+default:
+  interruptible: false
+  image: ubuntu:22.04
+  before_script:
+    - |
+      PKG_VERSION="0.0.$(date -d $CI_COMMIT_TIMESTAMP +%s)"
+      QBEE_GROUP_ID="$QBEE_GROUP_ID_DEV"
+      
+      # Determine package version and which group to deploy to
+      if [[ -n "$CI_COMMIT_TAG" ]]; then
+        PKG_VERSION="$CI_COMMIT_TAG"
+        QBEE_GROUP_ID="$QBEE_GROUP_ID_PROD"
+      fi
+      
+      export QBEE_ENDPOINT=${QBEE_ENDPOINT:-https://www.app.qbee.io}
+      export QBEE_GROUP_ID
+      export PKG_NAME=$CI_PROJECT_NAME
+      export PKG_ARCH=$(dpkg --print-architecture)
+      export PKG_VERSION
+      export PKG_FILENAME="${PKG_NAME}_${PKG_VERSION}_${PKG_ARCH}.deb"
+
+stages:
+  - build
+  - deploy
+
+package-job:
+  stage: build
+  script:
+    # Install dependendcies for fpm
+    - apt update && apt install -y binutils rubygems
+    # Install fpm
+    - gem install fpm
+    # Create deb package
+    - fpm --version $PKG_VERSION --architecture $PKG_ARCH -s dir -t deb -n $PKG_NAME -d python3-flask -d python3-yaml -p ./files -C ./files/package etc usr 
+  artifacts:
+    paths:
+      - ./files/*.deb
+deploy-job:
+  stage: deploy
+  dependencies:
+    - "package-job"
+  script:
+    # Install dependencies
+    - apt update && apt install -y jq curl python3-requests python3-jsonschema
+    # Authenticate using QBEE_USER and QBEE_PW
+    - eval $(./script/authenticate.sh)
+    # Upload package file
+    - ./script/upload-file.sh ./files/$PKG_FILENAME /test/$PKG_FILENAME
+    # Uploade package template file
+    - ./script/upload-file.sh ./files/config/qbee-ci-cd-config.yml.template /test/qbee-ci-cd-config.yml.template
+    # Upload software management config
+    - ./script/software-management-config.py $QBEE_BEARER_TOKEN qbee/software_management.json $PKG_FILENAME replace $QBEE_GROUP_ID 'uploading content from GitLab'
