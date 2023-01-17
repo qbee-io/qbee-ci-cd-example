@@ -1,5 +1,5 @@
 # qbee-ci-cd-example
-CI/CD example for qbee.io
+CI/CD example for qbee.io. Code for both Github and Gitlab is present.
 
 There are 4 vars that need to set under Settings -> CI/CD in GitLab:
 ﻿
@@ -13,6 +13,6 @@ Remember to use git tag names that correspond to the Debian package format for v
 
 This will hopefully get you started with CI/CD using GitLab and qbee. For questions please feel free to take contact.
 
-There is also an example for Github here:
+See also here for a Github blog post.
 
 https://qbee.io/misc/building-and-provisioning-deb-packages-via-ci-cd/
